@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validate</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #1a1a1a;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        h1{
+            color: #fff;
+        }
+
+        .box {
+            display: grid;
+            place-items: center;
+            background: #000;
+            padding: 80px;
+            border-radius: 20px;
+        }
+
+        #certNumber {
+            width: 250px;
+            height: 25px;
+            border-radius: 50px; 
+            transition: transform 0.3s ease; 
+        }
+        input:hover{
+            transform: scale(1.1);
+            background: #7e7b89; 
+        }
+        .btn{
+            width: 30%;
+            padding: 5px;
+            border-radius: 10%;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        button:hover{
+            transform: scale(1.1);
+            background: #380cda;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Verify Your Cerificate Issued by CIT</h1>
+        <div class="box">
+            <input type="text" name="input" id="certNumber"><br><br>
+            <button class="btn" onclick="verifyCertificate()">Verify</button>
+            <div id="result"></div>
+        </div>
+    </div>
+    <script>
+        const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRuDzo44MLtZ_SxyfGnMhEttfIMQCQfbRpynzoYlSurjTZsTP-wSpVGNi4Wwn3M0y_Tp-rThLvDfYT6/pub?gid=0&single=true&output=csv";
+
+        async function verifyCertificate() {
+            const certNumber = document.getElementById("certNumber").value.trim();
+            const getresult = document.getElementById("result");
+            if (!certNumber) {
+                getresult.innerHTML = "<p style='color:red;'>plese enter valid ceritificate no..</p>";
+                return;
+            }
+        try {
+            const response = await fetch(sheetURL);
+            const data = await response.text();
+            const certificateNumbers = data.split("\n").map(row => row.trim());
+            if (certificateNumbers.includes(certNumber)) {
+                getresult.innerHTML = "<p style='color:green;'>Certificate Verified!</p>";
+            } else {
+                getresult.innerHTML = "<p style='color:red;'>Certificate Not Found.</p>";
+            }
+
+        }
+        catch (error) {
+            getresult.innerHTML ="<p style='color:red;'>Error fetching data.</p>";
+        }
+    }
+
+    </script>
+</body>
+
+</html>
